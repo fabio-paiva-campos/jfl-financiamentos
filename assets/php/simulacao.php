@@ -108,79 +108,82 @@
   </section>
 
   <?php
-    $juros1 = 0;
-    $montante1 = 0;
+
+    $opt = 0;
+    $parcela = 0;
+    $juros = 0;
+    $parcela2 = 0;
     $juros2 = 0;
-    $montante2 = 0;
+    $parcela3 = 0;
     $juros3 = 0;
-    $montante3 = 0;
+    $montante = 0;
 
-    if(isset($_POST['valor']) && isset($_POST['valor'])) {
-      $preco = $_POST['valor'];
-      $op = $_POST['taxa'];
-
-      switch($op) {
-        case $op == 'taxa1':
-
-          $taxa = 0.098;
-          $meses = 12;
-           
-          $juros1 = $preco * $taxa * $meses;
-          $montante1 = $preco * (1 + ($taxa * $meses));
-           
-          break;
-
-        case $op == 'taxa2':
-
-          $taxa = 0.055;  
-          $meses = 12;
-         
-          $montante1 = $preco * pow((1 + $taxa), $meses);
-          $juros1 = $montante1 - $preco;
-
-          break;
-
-        case $op == 'taxa3':
-
-          $taxa = 0.095;  
-          $meses = 12;
-         
-          $montante2 = $preco * pow((1 + $taxa), $meses);
-          $juros2 = $montante2 - $preco;
-         
-          break;
-
-        case $op == 'taxa4':
-
-          $taxa = 0.398;
-          $meses = 12;
-           
-          $juros2 = $preco * $taxa * $meses;
-          $montante2 = $preco * (1 + ($taxa * $meses));
-           
-          break;
-
-        case $op == 'taxa5':
-
-          $taxa = 0.0105;  
-          $meses = 1;
-         
-          $montante3 = $preco * pow((1 + $taxa), $meses);
-          $juros3 = $montante3 - $preco;
-         
-          break;
-
-        case $op == 'taxa6':
-
-          $taxa = 0.0058;
-          $meses = 1;
-           
-          $juros3 = $preco * $taxa * $meses;
-          $montante3 = $preco * (1 + ($taxa * $meses));
-           
-          break;
+    function parcelaCalc($valor, $taxa, $opt){
+      $montante = $valor * pow((1 + $taxa), $opt);
+      return $parcela = number_format($montante / $opt, 2, ",", ".");
     }
-  }
+    function jurosCalc($valor, $taxa, $opt){
+      $montante = $valor * pow((1 + $taxa), $opt);
+      return $juros = number_format($montante - $valor, 2, ",", ".");
+    }
+
+    if(isset($_POST['valor'])) {
+      $opt = intval($_POST['opt']);
+      $valor = $_POST['valor'];
+
+      switch($opt){
+        case 12:
+          $taxa = 0.0098; 
+        break;
+        case 24:
+          $taxa = 0.0218; 
+        break;
+        case 36:
+          $taxa = 0.0398; 
+        break;
+        case 48:
+          $taxa = 0.055; 
+        break;
+      }
+      $parcela = parcelaCalc($valor, $taxa, $opt);
+      $juros = jurosCalc($valor, $taxa, $opt);
+    }
+    else if(isset($_POST['valor2'])) {
+      $opt = intval($_POST['opt2']);
+      $valor = $_POST['valor2'];
+
+      switch($opt){
+        case 12:
+          $taxa = 0.0088; 
+        break;
+        case 24:
+          $taxa = 0.02; 
+        break;
+        case 36:
+          $taxa = 0.0388; 
+        break;
+        case 48:
+          $taxa = 0.052; 
+        break;
+      }
+      $parcela2 = parcelaCalc($valor, $taxa, $opt);
+      $juros2 = jurosCalc($valor, $taxa, $opt);
+    }
+    else if(isset($_POST['valor3'])) {
+      $opt = intval($_POST['opt3']);
+      $valor = $_POST['valor3'];
+
+      switch($opt){
+        case 1:
+          $taxa = 0.01; 
+        break;
+        case 3:
+          $taxa = 0.02; 
+        break;
+      }
+      $parcela3 = parcelaCalc($valor, $taxa, $opt);
+      $juros3 = jurosCalc($valor, $taxa, $opt);
+    }
 ?>
 
   <!-- start simulacao -->
@@ -200,21 +203,22 @@
             <form class="formulario" method="post"> 
         <p class="textosimulacao"> Faça sua simulação aqui.</p>
          <div class="field radiobox">
-            <span class="textosimulacao">Escolha a taxa<br></span>
-            <input type="radio" name="taxa" id="taxa" value="taxa1" checked><label for="taxa1" class="textosimulacao">Simples 0.98% a.a.</label><br>
-            <input type="radio" name="taxa" id="taxa" value="taxa2"><label for="taxa2" class="textosimulacao">Completo 5.5% a.a</label>
-        </div>
+            <span class="textosimulacao">Juros e Parcelamento:<br></span>
+            <input type="radio" name="opt" id="opt" value="12" checked><label for="opt" class="textosimulacao">12x com juros de 0.98% a.a.</label><br>
+            <input type="radio" name="opt" id="opt" value="24"><label for="opt" class="textosimulacao">24x com juros de 2.18% a.a</label><br>
+            <input type="radio" name="opt" id="opt" value="36"><label for="opt" class="textosimulacao">36x com juros de 3.98% a.a.</label><br>
+            <input type="radio" name="opt" id="opt" value="48"><label for="opt" class="textosimulacao">48x com juros de 5.5% a.a</label>
+          </div>
         <div class="field textosimulacao" >
             <label for="valor">Valor do Carro:</label>
-            <input type="text" id="valor" name="valor" placeholder="Digite o valor">
+            <input type="text" id="valor" name="valor" placeholder="Digite o valor:">
         </div>       
      
         <input type="submit" name="acao" class="bg-info" value="Simular">
     </form>
           </div>
           <div class="col-md-6 textotaxas controle-fin text-justify">
-            <h5><br><br><br><?php echo "O total de juros a ser pago é: " . $juros1 . "<br>";
-        echo "O montante a ser pago é: " . $montante1; ?></h5>
+            <h5><br><br><br><?php echo "O financiamento será em: ". $opt ."x de R$" . $parcela ."<br>"; echo "O total de juros a ser pago é: R$" . $juros; ?></h5>
           </div>
         </div>
       </div>
@@ -224,47 +228,47 @@
           <div class="col-md-6 embed-responsive-16by9">
              <form class="formulario textoform" method="post"> 
         <h4 class="textosimulacao"> Faça sua simulação aqui.</h2>
-         <div class="field radiobox textosimulacao">
-            <span>Escolha a taxa?<br></span>
-            <input type="radio" name="taxa" id="taxa" value="taxa3" checked><label for="taxa3">Simples 3.98% a.a.</label><br>
-            <input type="radio" name="taxa" id="taxa" value="taxa4"><label for="taxa4">Completo 9.5% a.a</label>
-        </div>
+         <div class="field radiobox">
+            <span class="textosimulacao">Juros e Parcelamento:<br></span>
+            <input type="radio" name="opt2" id="opt" value="12" checked><label for="opt" class="textosimulacao">12x com juros de 0.88% a.a.</label><br>
+            <input type="radio" name="opt2" id="opt" value="24"><label for="opt" class="textosimulacao">24x com juros de 2% a.a</label><br>
+            <input type="radio" name="opt2" id="opt" value="36"><label for="opt" class="textosimulacao">36x com juros de 3.88% a.a.</label><br>
+            <input type="radio" name="opt2" id="opt" value="48"><label for="opt" class="textosimulacao">48x com juros de 5.2% a.a</label>
+          </div>
         <div class="field textosimulacao">
             <label for="valor">Valor do Casa:</label>
-            <input type="text" id="valor" name="valor" placeholder="Digite o valor">
+            <input type="text" id="valor2" name="valor2" placeholder="Digite o valor">
         </div>      
 
-        <input type="submit" name="acao" class="bg-info" value="Simular">
+        <input type="submit" name="acao2" class="bg-info" value="Simular">
     </form>
           </div>
           <div class="col-md-6 textotaxas controle-fin text-justify">
-            <h5><br><br><br><?php echo "O total de juros a ser pago é: " . $juros2 . "<br>";
-        echo "O montante a ser pago é: " . $montante2; ?></h5>
+            <h5><br><br><br><?php echo "O financiamento será em: ". $opt ."x de R$" . $parcela2 ."<br>"; echo "O total de juros a ser pago é: R$" . $juros2; ?></h5>
           </div>
         </div>
       </div>
 
-      <div class="tab-pane fade pb-5" id="nav-item-03"> 
+      <div class="tab-pane fade pb-5" id="nav-item-03">
         <div class="row">
           <div class="col-md-6 embed-responsive-16by9">
              <form class="formulario textoform" method="post"> 
         <h4 class="textosimulacao"> Faça sua simulação aqui.</h2>
-         <div class="field radiobox textosimulacao">
-            <span>Escolha a taxa:<br></span>
-            <input type="radio" name="taxa" id="taxa" value="taxa5" checked><label for="taxa5">Simples 0.58% a.m.</label><br>
-            <input type="radio" name="taxa" id="taxa" value="taxa6"><label for="taxa6">Completo 1.5% a.m</label>
-        </div>
+         <div class="field radiobox">
+            <span class="textosimulacao">Juros e Parcelamento:<br></span>
+            <input type="radio" name="opt3" id="opt" value="1" checked><label for="opt" class="textosimulacao">1x com juros de 1% a.a.</label><br>
+            <input type="radio" name="opt3" id="opt" value="3"><label for="opt" class="textosimulacao">3x com juros de 2% a.a</label><br>
+          </div>
         <div class="field textosimulacao">
             <label for="valor">Valor do Crédito:</label>
-            <input type="text" id="valor" name="valor" placeholder="Digite o valor">
+            <input type="text" id="valor3" name="valor3" placeholder="Digite o valor">
         </div>      
 
-        <input type="submit" name="acao" class="bg-info" value="Simular">
+        <input type="submit" name="acao3" class="bg-info" value="Simular">
     </form>
           </div>
-          <div class="col-md-6 textotaxas controle-fin text-justify ">
-            <h5><br><br><br><?php echo "O total de juros a ser pago é: " . $juros3 . "<br>";
-        echo "O montante a ser pago é: " . $montante3; ?><br><br><br><br>
+          <div class="col-md-6 textotaxas controle-fin text-justify">
+            <h5><br><br><br><?php echo "O financiamento será em: ". $opt ."x de R$" . $parcela3 ."<br>"; echo "O total de juros a ser pago é: R$" . $juros3; ?></h5>
           </div>
         </div>
       </div>
